@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "ffbcf49b-9bcf-4c09-ba11-68ef18115baa",
+		"name": "My API",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [{
+			"name": "Get all persons",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:30010/api/v2/persons",
+					"host": [
+						"localhost"
+					],
+					"port": "30010",
+					"path": [
+						"api",
+						"v2",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new person",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"company_name\": \"Acme Inc.\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:30010/api/v2/persons",
+					"host": [
+						"localhost"
+					],
+					"port": "30010",
+					"path": [
+						"api",
+						"v2",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

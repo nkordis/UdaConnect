@@ -1,0 +1,4 @@
+This is a gRPC implementation for finding connections based on person ID, location, and time period. 
+The implementation files are located in the 'app/udaconnect' directory and include connection_pb2.py and connection_pb2_grpc.py, which are generated from the connection.proto file. 
+To deploy the app, you can create a Kubernetes pod inside a cluster with the appropriate database configuration, and include the implementation files in the app directory inside the pod. 
+Once the pod is running, you can run the client.py script from a local machine to send requests to the app and receive responses containing a list of connections with their corresponding location and person details.

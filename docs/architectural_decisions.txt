@@ -1,0 +1,9 @@
+1) The Frontend communicates with the Person microservice via REST to retrieve all person data and with the Connection microservice via gRPC to retrieve all connected users based on user ID.
+
+2) The Person microservice retrieves the person data from the database and passes it to the Frontend microservice using REST because it's a simple and lightweight communication protocol that is widely supported and easy to implement.
+
+3) The Connection microservice retrieves the location data from the database based on user ID and passes it to the Frontend microservice using gRPC messages because it's a fast and efficient communication protocol for large amounts of data that require low latency and high throughput.
+
+4) The Location microservice uses a Kafka service to update the location data in the database. Kafka is an ideal choice for this task because it provides reliable and scalable message delivery for large amounts of user location data that are sent from mobile devices.
+
+5) The Database interacts with all microservices, except for the Frontend, to store and retrieve data. It is a centralized data store that provides consistency and durability for all microservices.
