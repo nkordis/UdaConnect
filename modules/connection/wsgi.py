@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append("/app/udaconnect")
 
 from app import create_app
 
