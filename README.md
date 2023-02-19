@@ -150,3 +150,78 @@ Your architecture diagram should focus on the services and how they talk to one 
 ## Tips
 * We can access a running Docker container using `kubectl exec -it <pod_id> sh`. From there, we can `curl` an endpoint to debug network issues.
 * The starter project uses Python Flask. Flask doesn't work well with `asyncio` out-of-the-box. Consider using `multiprocessing` to create threads for asynchronous behavior in a standard Flask application.
+
+
+## UdaConnect Refactored in Microservices
+
+These steps will help you run UdaConnect, a microservice-based version of the UdaConnect application, which allows users to connect with each other and share their locations.
+
+### Prerequisites
+
+Before you begin, ensure that you have the following installed on your local machine:
+
+-   Git
+-   Vagrant
+-   VirtualBox
+
+
+### Step 1: Navigate to the project directory
+
+Navigate to the project directory by running the following command:
+
+`cd UdaConnect` 
+
+### Step 2: Launch the Vagrant environment
+
+Launch the Vagrant environment by running the following command:
+
+`vagrant up` 
+
+### Step 3: SSH into the Vagrant environment
+
+SSH into the Vagrant environment by running the following command:
+
+`vagrant ssh` 
+
+### Step 4: Navigate to the project directory inside the Vagrant environment
+
+Navigate to the project directory inside the Vagrant environment by running the following command:
+
+`cd /vagrant/UdaConnect` 
+
+### Step 5: Apply the Kubernetes manifests in the deployments directory
+
+Apply the Kubernetes manifests in the deployments directory to create the pods by running the following command:
+
+`kubectl apply -f deployments/` 
+
+### Step 6: Check the status of the pods
+
+Check the status of the pods by running the following command:
+
+`kubectl get pods` 
+
+### Step 7: Check the status of the services
+
+Check the status of the services by running the following command:
+
+`kubectl get svc` 
+
+### Step 8: Access the UdaConnect application
+
+Access the UdaConnect application from your host machine by visiting the following URLs:
+
+-   Person API: [http://localhost:30010/api/v2/persons](http://localhost:30010/api/v2/persons)
+-   Location API: [http://localhost:30001/api/locations/](http://localhost:30001/api/locations/)
+-   UdaConnect Web UI: [http://localhost:30010/](http://localhost:30010/)
+- UdaConnect APP: [http://localhost:30000/](http://localhost:30000/)
+
+### Step 9: View the logs
+
+To view the logs for the location producer, location receiver, and Postgres, run the following commands:
+
+-   Location Producer logs: `kubectl logs location-producer-<pod-id>`
+-   Location Receiver logs: `kubectl logs location-consumer-<pod-id>`
+-   Postgres logs: `kubectl logs postgres-<pod-id>`
+
+That's it! You should now be able to run and test the UdaConnect application.
