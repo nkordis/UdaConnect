@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: location-consumer
+  name: location-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: location-consumer
+  template:
+    metadata:
+      labels:
+        app: location-consumer
+    spec:
+      containers:
+      - name: location-consumer
+        image: nikosko/location-consumer:latest
+        imagePullPolicy: Always
+        env:
+        - name: KAFKA_URL
+          value: kafka-service:9092  
+        - name: KAFKA_TOPIC
+          value: location
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: location-consumer
+spec:
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: location-consumer
+  type: ClusterIP

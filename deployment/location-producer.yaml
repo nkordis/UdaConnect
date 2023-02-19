@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: location-producer-service
+  labels:
+    app: location-producer
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: location-producer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: location-producer
+  labels:
+    app: location-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: location-producer
+  template:
+    metadata:
+      labels:
+        app: location-producer
+    spec:
+      containers:
+        - name: location-producer
+          image: nikosko/location-producer
+          ports:
+            - containerPort: 80
+          env:
+            - name: KAFKA_SERVER
+              value: kafka-service:9092
