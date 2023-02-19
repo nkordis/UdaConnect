@@ -1,2 +1,10 @@
-flask
+Flask
+Flask-Cors
+Flask-Restx
+Flask-Script
+Flask-Migrate
+psycopg2-binary
+SQLAlchemy
 kafka-python
+geoalchemy2
+shapely
