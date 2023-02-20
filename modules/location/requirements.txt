@@ -7,4 +7,4 @@ psycopg2-binary
 SQLAlchemy
 kafka-python
 geoalchemy2
-shapely
+Shapely==1.7.1

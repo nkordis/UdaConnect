@@ -17,12 +17,8 @@ class LocationService:
     def create(message: bytes) -> None:
         location = json.loads(message.decode('utf-8'))
         new_location = Location()
-    
         new_location.person_id = location["user_id"]
         new_location.creation_time = datetime.now().strftime(DATE_FORMAT)
-        #new_location.latitude = location[1] #location["latitude"]
-        #new_location.longitude = location[2]#location["longitude"]
-        #new_location.coordinate = f"POINT({location[2]} {location[1]})"
         new_location.coordinate = f"POINT({location['longitude']} {location['latitude']})"
         db.session.add(new_location)
         db.session.commit()

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
-from __init__ import db  # noqa
+from __init__ import db 
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry.point import Point
