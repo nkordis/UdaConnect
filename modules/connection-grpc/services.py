@@ -50,13 +50,4 @@ class ConnectionsService(connection_pb2_grpc.ConnectionServiceServicer):
         return connection_pb2.ConnectionResponse(connections=connections)
 
 
-def serve(config_name='dev'):
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    connection_pb2_grpc.add_ConnectionServiceServicer_to_server(ConnectionsService(), server)
-    server.add_insecure_port('[::]:30051')
-    server.start()
-    server.wait_for_termination()
 
-
-if __name__ == '__main__':
-    serve()

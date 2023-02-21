@@ -1,16 +1,15 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from datetime import datetime
 
-from __init__ import db  
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry.point import Point
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 
+db = SQLAlchemy()
 
 class Person(db.Model):
     __tablename__ = "person"
