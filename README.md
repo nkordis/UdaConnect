@@ -97,23 +97,6 @@ These pages should also load on your web browser:
 * `http://localhost:30001/api/` - Base path for API
 * `http://localhost:30000/` - Frontend ReactJS Application
 
-#### Deployment Note
-You may notice the odd port numbers being served to `localhost`. [By default, Kubernetes services are only exposed to one another in an internal network](https://kubernetes.io/docs/concepts/services-networking/service/). This means that `udaconnect-app` and `udaconnect-api` can talk to one another. For us to connect to the cluster as an "outsider", we need to a way to expose these services to `localhost`.
-
-Connections to the Kubernetes services have been set up through a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport). (While we would use a technology like an [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) to expose our Kubernetes services in deployment, a NodePort will suffice for development.)
-
-## Development
-### New Services
-New services can be created inside of the `modules/` subfolder. You can choose to write something new with Flask, copy and rework the `modules/api` service into something new, or just create a very simple Python application.
-
-As a reminder, each module should have:
-1. `Dockerfile`
-2. Its own corresponding DockerHub repository
-3. `requirements.txt` for `pip` packages
-4. `__init__.py`
-
-### Docker Images
-`udaconnect-app` and `udaconnect-api` use docker images from `udacity/nd064-udaconnect-app` and `udacity/nd064-udaconnect-api`. To make changes to the application, build your own Docker image and push it to your own DockerHub repository. Replace the existing container registry path with your own.
 
 ## Configs and Secrets
 In `deployment/db-secret.yaml`, the secret variable is `d293aW1zb3NlY3VyZQ==`. The value is simply encoded and not encrypted -- this is ***not*** secure! Anyone can decode it to see what it is.
@@ -141,18 +124,7 @@ To manually connect to the database, you will need software compatible with Post
 * CLI users will find [psql](http://postgresguide.com/utilities/psql.html) to be the industry standard.
 * GUI users will find [pgAdmin](https://www.pgadmin.org/) to be a popular open-source solution.
 
-## Architecture Diagrams
-Your architecture diagram should focus on the services and how they talk to one another. For our project, we want the diagram in a `.png` format. Some popular free software and tools to create architecture diagrams:
-1. [Lucidchart](https://www.lucidchart.com/pages/)
-2. [Google Docs](docs.google.com) Drawings (In a Google Doc, _Insert_ - _Drawing_ - _+ New_)
-3. [Diagrams.net](https://app.diagrams.net/)
-
-## Tips
-* We can access a running Docker container using `kubectl exec -it <pod_id> sh`. From there, we can `curl` an endpoint to debug network issues.
-* The starter project uses Python Flask. Flask doesn't work well with `asyncio` out-of-the-box. Consider using `multiprocessing` to create threads for asynchronous behavior in a standard Flask application.
-
-
-## UdaConnect Refactored in Microservices
+# UdaConnect Refactored in Microservices
 
 These steps will help you run UdaConnect, a microservice-based version of the UdaConnect application, which allows users to connect with each other and share their locations.
 
@@ -207,21 +179,50 @@ Check the status of the services by running the following command:
 
 `kubectl get svc` 
 
-### Step 8: Access the UdaConnect application
+### Step 8: Test the REST implementation of the person endpoint
 
-Access the UdaConnect application from your host machine by visiting the following URLs:
+The person endpoint has been exposed through a NodePort and can be accessed on your local machine at `http://localhost:30010/api/v2/persons`. The frontend has been configured to use the new person endpoint as well, and you can access the UdaConnect app at `http://localhost:30000/`.
 
--   Person API: [http://localhost:30010/api/v2/persons](http://localhost:30010/api/v2/persons)
--   Location API: [http://localhost:30001/api/locations/](http://localhost:30001/api/locations/)
--   UdaConnect Web UI: [http://localhost:30010/](http://localhost:30010/)
-- UdaConnect APP: [http://localhost:30000/](http://localhost:30000/)
 
-### Step 9: View the logs
+### Step 9: Test the Connection-gRPC Implementation
 
-To view the logs for the location producer, location receiver, and Postgres, run the following commands:
+   The Connection gRPC endpoint is exposed through a NodePort service. To test the connection,  a client has   been provided that can be run from the local machine.
+   
+1.  Determine the ID of the connection-grpc pod by running the following command:
+    
+    `kubectl get pods` 
+    
+2.  Check the logs of the connection-grpc pod to ensure that the server is up and running by running the following command:
+    
+    `kubectl logs -f <connection-grpc-id>` 
+    
+3.  Once you have confirmed that the connection-grpc server is up and running, open a new terminal window and navigate to the root directory of the connection-grpc module.
+    
+4.  Run the gRPC client provided in the connection-grpc modulr by running the following command:
+    
+    `python client.py` 
+    
+5.  The client will connect to the gRPC server and display the data retrieved from the database, including the person and location data.
 
--   Location Producer logs: `kubectl logs location-producer-<pod-id>`
--   Location Receiver logs: `kubectl logs location-consumer-<pod-id>`
--   Postgres logs: `kubectl logs postgres-<pod-id>`
 
-That's it! You should now be able to run and test the UdaConnect application.
+### Step 10: Test the Kafka implementation of the location endpoint
+
+The `location-producer` produces location data every 20 seconds (simulating how a mobile app might send location data). The `location-producer` sends location data to the Kafka broker, and the `location-consumer` gets the data from the broker and inserts it into the database. To test the implementation, ensure that all pods are up and running (`kubectl get pods`), and then follow the steps below:
+
+1.  Check the logs of the `location-producer`, `location-consumer`, and `postgres` pods using the following commands:
+    
+    `kubectl logs -f <location-producer-id>
+    kubectl logs -f <location-consumer-id>
+    kubectl logs -f <postgres-id>` 
+    
+    You should see messages sent from the producer, the consumer receiving them, and the data being added successfully to the database. There should be no errors in the logs.
+    
+2.  To view the data in the database, you can log in to the `postgres` pod using the following command:
+   
+    `kubectl exec -it <postgres-id> -- psql -U <db-username> <db-name>`
+	Once you're logged in, you can check the data in the database by running the following command:
+`	SELECT * FROM <table-name> ORDER BY id DESC LIMIT 10;` 
+
+	This command will display the last 10 records that were inserted into the database. You can 		modify the `LIMIT` parameter to see more or fewer records.
+
+That's it! If you follow these steps, you should be able to verify that the Kafka implementation of the location endpoint is working correctly.
