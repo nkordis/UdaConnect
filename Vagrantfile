@@ -35,6 +35,9 @@ Vagrant.configure("2") do |config|
       sudo zypper --non-interactive install apparmor-parser
       curl -sfL https://get.k3s.io | sh -
     SHELL
+
+     # Sync the root directory of the project to /vagrant on the VM
+  config.vm.synced_folder ".", "/vagrant"
   end
 
 
